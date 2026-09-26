@@ -1,0 +1,191 @@
+{
+  "theme": "KIIT red + charcoal warm light enterprise dashboard with high contrast tactical dark elements",
+  "archetype": "THE PERFORMANCE PRO / COMMAND CENTRE (Tactical Enterprise & University Safety GIS)",
+  "colors": {
+    "surfaces": [
+      {
+        "name": "page",
+        "kind": "solid",
+        "bg": "#F8F9FA",
+        "on_bg": "#121826",
+        "on_bg_muted": "#4B5563"
+      },
+      {
+        "name": "panel",
+        "kind": "solid",
+        "bg": "#FFFFFF",
+        "on_bg": "#111827",
+        "on_bg_muted": "#4B5563"
+      },
+      {
+        "name": "brand_header",
+        "kind": "solid",
+        "bg": "#8B0000",
+        "on_bg": "#FFFFFF",
+        "on_bg_muted": "#FDE8E8",
+        "roles": {
+          "gold_badge_text": "#FEE685",
+          "live_indicator": "#4ADE80"
+        }
+      },
+      {
+        "name": "tactical_control_bar",
+        "kind": "solid",
+        "bg": "#1E293B",
+        "on_bg": "#F8FAFC",
+        "on_bg_muted": "#94A3B8",
+        "roles": {
+          "accent_badge": "#FBBF24",
+          "danger_alert": "#F87171"
+        }
+      },
+      {
+        "name": "hotspot_card_critical",
+        "kind": "solid",
+        "bg": "#FEF2F2",
+        "on_bg": "#991B1B",
+        "on_bg_muted": "#7F1D1D"
+      },
+      {
+        "name": "inverse_map_drawer",
+        "kind": "solid",
+        "bg": "#0F172A",
+        "on_bg": "#F8FAFC",
+        "on_bg_muted": "#94A3B8"
+      },
+      {
+        "name": "map_overlay_glass",
+        "kind": "glass",
+        "contrast_against": "#1E293B",
+        "guarantee": "backdrop-blur-md bg-white/90 border border-slate-200 shadow-xl",
+        "on_bg": "#0F172A",
+        "on_bg_muted": "#475569"
+      }
+    ],
+    "accent": "#C41E3A",
+    "on_accent": "#FFFFFF",
+    "kiit_primary_crimson": "#8B0000",
+    "kiit_bright_red": "#C41E3A",
+    "kiit_gold_accent": "#D97706",
+    "charcoal_dark": "#1E293B",
+    "slate_neutral": "#64748B",
+    "status_critical": "#DC2626",
+    "status_high": "#EA580C",
+    "status_medium": "#D97706",
+    "status_low": "#2563EB",
+    "status_resolved": "#16A34A"
+  },
+  "typography": {
+    "fonts": {
+      "heading": "Manrope, sans-serif",
+      "body": "IBM Plex Sans, sans-serif",
+      "mono": "IBM Plex Mono, monospace"
+    },
+    "font_import": "@import \"@fontsource-variable/manrope\";\n@import \"@fontsource/ibm-plex-sans\";\n@import \"@fontsource/ibm-plex-mono\";",
+    "scale_px": {
+      "display": 52,
+      "h1": 36,
+      "h2": 28,
+      "h3": 20,
+      "h4": 16,
+      "body": 15,
+      "caption": 13
+    }
+  },
+  "entry_surfaces": {
+    "/": "tactical enterprise control-room split — KIIT brand header top, real interactive Leaflet GIS map left (Bhubaneswar + KIIT cluster + hotspots), real-time incident queue & hotspot analyzer right panel with detail drawer",
+    "/login": "branded split auth — KIIT University emergency response dispatch insignia & Bhubaneswar geo-coverage briefing panel left, credential login/signup form right"
+  },
+  "grids": {
+    "dashboard_mode": "Bento High Density Mode B (3-column layout: Left Filter & Hotspot Summary col-span-1 md:col-span-3 lg:col-span-3, Middle Main Leaflet Map col-span-1 md:col-span-5 lg:col-span-6, Right Live Incident Feed & Action Drawer col-span-1 md:col-span-4 lg:col-span-3)",
+    "mobile_mode": "Single column flex with quick-switch tab between Map View, Hotspot Matrix, and Incident Log"
+  },
+  "map_specifications": {
+    "engine": "Leaflet + React-Leaflet with OpenStreetMap / CartoDB Voyager and CartoDB DarkMatter / Positron free keyless tiles",
+    "package_to_install": "yarn add leaflet react-leaflet @types/leaflet",
+    "css_requirement": "import 'leaflet/dist/leaflet.css' in the Map component",
+    "coordinates": {
+      "bhubaneswar_center": [20.2961, 85.8245],
+      "bhubaneswar_zoom": 12,
+      "kiit_campus_center": [20.3548, 85.8192],
+      "kiit_zoom": 16,
+      "kiit_square_hotspot": [20.3533, 85.8188]
+    },
+    "predefined_landmarks": [
+      {"name": "KIIT Square / Campus 1 & 3", "coords": [20.3533, 85.8188], "type": "kiit", "hotspot_level": "critical", "incident_count": 42},
+      {"name": "KIIT Campus 6 & Law School", "coords": [20.3572, 85.8144], "type": "kiit", "hotspot_level": "medium", "incident_count": 14},
+      {"name": "KIMS Hospital & Medical Campus", "coords": [20.3498, 85.8175], "type": "kiit", "hotspot_level": "high", "incident_count": 27},
+      {"name": "KIIT International School / Campus 9", "coords": [20.3601, 85.8229], "type": "kiit", "hotspot_level": "low", "incident_count": 8},
+      {"name": "Patia Station Road & Infocity Junction", "coords": [20.3585, 85.8115], "type": "bhubaneswar", "hotspot_level": "high", "incident_count": 31},
+      {"name": "Jayadev Vihar Overbridge", "coords": [20.3021, 85.8239], "type": "bhubaneswar", "hotspot_level": "critical", "incident_count": 38},
+      {"name": "Master Canteen / Railway Station Area", "coords": [20.2667, 85.8436], "type": "bhubaneswar", "hotspot_level": "high", "incident_count": 29},
+      {"name": "Saheed Nagar Market", "coords": [20.2885, 85.8453], "type": "bhubaneswar", "hotspot_level": "medium", "incident_count": 19},
+      {"name": "Khandagiri Square Junction", "coords": [20.2589, 85.7865], "type": "bhubaneswar", "hotspot_level": "high", "incident_count": 24},
+      {"name": "Rasulgarh Square NH16", "coords": [20.3051, 85.8672], "type": "bhubaneswar", "hotspot_level": "critical", "incident_count": 45}
+    ],
+    "features_required": [
+      "Key-free OSM / Carto Positron / Satellite-hybrid simulation layers",
+      "One-click 'Focus Bhubaneswar City' vs 'Focus KIIT University Campus' buttons",
+      "Red hot-spot glow polygons/circles with pulsating animation for top incident zones (KIIT Square #1)",
+      "Interactive marker pins with custom SVG badges colored by severity (Critical: Red, High: Orange, Medium: Amber, Low: Blue)",
+      "Cluster aggregation and radius heat zones",
+      "Predefined landmark quick-search dropdown with instant pan/zoom",
+      "Fullscreen toggle with ESC key handler",
+      "Map layer switcher (Street Clean, Tactical Dark, Topo / Terrain)",
+      "Click-on-map / click-on-marker opens full incident detail drawer with action triggers"
+    ]
+  },
+  "visual_enhancers": {
+    "brand_header": "Deep KIIT Crimson (#8B0000) top bar with gold accent insignia, emergency response ticker, live status pill, Indian Standard Time (IST) live clock",
+    "hotspot_highlight": "KIIT Square highlighted in vibrant flashing crimson ring with badge: 'PRIMARY HOTSPOT: 42 INCIDENTS RECORDED'",
+    "tactical_cards": "1px crisp slate borders (#E2E8F0), subtle hover scale (-translate-y-0.5), crisp monospace coordinates",
+    "stats_ribbon": "High-density command widgets showing Total Incidents, Active Dispatches, KIIT Hotspot Index, Resolution Rate, and Response Time"
+  },
+  "motion": {
+    "hover_transitions": "transition-transform duration-150 ease-out",
+    "drawer_transition": "spring physics with 250ms duration",
+    "marker_pulse": "CSS pulse keyframe on critical severity incident markers",
+    "toast_notifications": "sonner bottom-right stack"
+  },
+  "accessibility": {
+    "contrast_compliance": "APCA & WCAG AA certified across all surfaces (all text >4.5:1 against respective surfaces)",
+    "keyboard_nav": "Full tab order on search, zoom buttons, landmark chips, incident list items, and modal triggers",
+    "aria_labels": "All map controls, quick focus pills, and filter buttons have explicit aria-label and role attributes",
+    "testing_attributes": "All buttons, inputs, markers, chips, drawers have kebab-case data-testid attributes"
+  },
+  "image_urls": [
+    {
+      "url": "https://images.unsplash.com/photo-1632988663082-4bac2c1847a0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTJ8MHwxfHNlYXJjaHwzfHx1bml2ZXJzaXR5JTIwY2FtcHVzJTIwYnVpbGRpbmd8ZW58MHx8fHwxNzkwNDQxNTc4fDA&ixlib=rb-4.1.0&q=85",
+      "category": "campus_hero",
+      "description": "Modern illuminated KIIT University modern institutional architecture for auth left panel & about modal"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1731349219592-60ca16964631?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTJ8MHwxfHNlYXJjaHwxfHx1bml2ZXJzaXR5JTIwY2FtcHVzJTIwYnVpbGRpbmd8ZW58MHx8fHwxNzkwNDQxNTc4fDA&ixlib=rb-4.1.0&q=85",
+      "category": "campus_day",
+      "description": "KIIT University campus greens and academic blocks for report thumbnails"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1759933797537-839903b02eb5?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODB8MHwxfHNlYXJjaHwxfHxlbWVyZ2VuY3klMjBjb21tYW5kJTIwY2VudGVyfGVufDB8fHx8MTc5MDQ0MTU3OHww&ixlib=rb-4.1.0&q=85",
+      "category": "emergency_response",
+      "description": "Rapid response dispatch unit for incident reports"
+    }
+  ],
+  "instructions_to_main_agent": [
+    "1. Replace previous placeholder or basic UI with a high-caliber KIIT University Emergency GIS & Command Room dashboard.",
+    "2. Install 'leaflet', 'react-leaflet', and '@types/leaflet' via 'yarn add leaflet react-leaflet @types/leaflet' in /app/frontend.",
+    "3. Fix Leaflet's default marker icon issue by providing custom SVG / DivIcon pins (prevents broken image icon bug in Vite).",
+    "4. Ensure the map defaults to an expansive view of Bhubaneswar with one-click toggles for 'KIIT Campus Cluster' and 'Bhubaneswar City View'.",
+    "5. Highlight KIIT Square prominently with a bright pulsating hotspot circle and a statistical breakdown of historical incidents (Traffic gridlock, Medical emergency, Minor collision, Crowd surge, Electrical fault).",
+    "6. Include 20+ realistic geo-referenced incidents across Bhubaneswar (KIIT Square, Patia, Infocity, Jayadev Vihar, Rasulgarh, Master Canteen, Khandagiri, KIMS Hospital).",
+    "7. Implement landmark quick-search dropdown, filter by category/severity/time range, layer switcher (Street, Carto Dark, Topo), and fullscreen mode.",
+    "8. Build a sliding or side-docked incident detail drawer with action buttons: 'Dispatch Security', 'Broadcast SMS Alert', 'Mark Resolved', 'Export PDF/JSON'.",
+    "9. Maintain working authentication (Sign in, Sign up, Session state with Indian student/staff role presets).",
+    "10. Set up all data-testid attributes (e.g. data-testid='map-kiit-focus-btn', data-testid='map-search-input', data-testid='incident-card-*', data-testid='hotspot-kiit-square')."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": {
+    "button_styling": "Use crisp borders, subtle gold/red active states, smooth hover elevations, and explicit focus rings.",
+    "anti_ai_slop": "Do not use standard generic purple gradients. Use authentic KIIT Red (#8B0000 & #C41E3A), Charcoal Slate (#1E293B), Warm Light Background (#F8F9FA), and Crisp Tactical Typography.",
+    "contrast_rule": "Ensure all text tokens satisfy 4.5:1 minimum APCA/WCAG contrast against their actual container background.",
+    "mobile_support": "Map height must be responsive; use flex/grid stacking on mobile viewports so user can switch between map and incident list easily."
+  }
+}

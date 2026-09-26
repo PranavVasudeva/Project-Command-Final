@@ -1,0 +1,15 @@
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { MessageCircle, Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { apiGet, apiPost } from "@/lib/api";
+import type { IncidentMessage, UserPublic } from "@/lib/types";
+
+export default function IncidentComms({ reportId, currentUser, inverse = false }: { reportId: string; currentUser?: UserPublic; inverse?: boolean }) {
+  const queryClient = useQueryClient();
+  const [message, setMessage] = useState("");
+  const messages = useQuery({ queryKey: ["dispatch", "messages", reportId], queryFn: ({ signal }) => apiGet<IncidentMessage[]>(`/dispatch/reports/${reportId}/messages`, signal), retry: false, refetchInterval: 15000 });
+  const send = useMutation({ mutationFn: () => apiPost<IncidentMessage>(`/dispatch/reports/${reportId}/messages`, { message }), onSuccess: () => { setMessage(""); queryClient.invalidateQueries({ queryKey: ["dispatch", "messages", reportId] }); } });
+  return <div className={`rounded-xl border p-3 ${inverse ? "border-white/10 bg-white/[0.04]" : "border-slate-200 bg-slate-50"}`} data-testid={`incident-comms-${reportId}`}><p className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider ${inverse ? "text-slate-300" : "text-slate-600"}`}><MessageCircle className="size-3.5" /> Incident channel</p><div className="mt-3 max-h-32 space-y-2 overflow-y-auto">{messages.data?.length ? messages.data.map((item) => <div key={item.id} className={`rounded-lg px-3 py-2 text-[10px] ${item.sender_id === currentUser?.id ? inverse ? "ml-7 bg-red-500/15 text-red-100" : "ml-7 bg-red-50 text-red-950" : inverse ? "mr-7 bg-white/[0.06] text-slate-300" : "mr-7 bg-white text-slate-700"}`}><p>{item.message}</p><p className={`mt-1 font-mono text-[8px] ${inverse ? "text-slate-500" : "text-slate-400"}`}>{item.sender_name} · {item.sender_role.replaceAll("_", " ")}</p></div>) : <p className={`py-2 text-[10px] ${inverse ? "text-slate-500" : "text-slate-400"}`}>No messages yet. Use this channel for operational updates.</p>}</div><form className="mt-3 flex gap-2" onSubmit={(event) => { event.preventDefault(); if (message.trim()) send.mutate(); }}><Input data-testid={`incident-message-input-${reportId}`} value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Send an update…" maxLength={700} className={inverse ? "border-white/10 bg-white/[0.05] text-white placeholder:text-slate-600" : "bg-white"} /><Button type="submit" data-testid={`incident-message-send-${reportId}`} disabled={!message.trim() || send.isPending} size="icon-sm" className="bg-[#8b0000] text-white hover:bg-[#a30d1b]"><Send className="size-3.5" /></Button></form></div>;
+}

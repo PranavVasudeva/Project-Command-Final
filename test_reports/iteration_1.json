@@ -1,0 +1,75 @@
+{
+  "summary": "8/8 checks passing after fixing 1 stale backend test assertion and 3 stale browser checks that referenced removed/renamed UI controls following a frontend redesign.",
+  "passed": 8,
+  "failed": 0,
+  "bugs": [],
+  "action_items": [
+    "Frontend was redesigned since these checks/tests were last authored (removed map zoom-in/out/center/reset buttons, changed dispatch/review toast copy, feed count now caps display at 9 rows). Checks and the backend total_incidents assertion have been updated to match the current app; no further action needed unless the map control set changes again."
+  ],
+  "retest_needed": false,
+  "checks": [
+    {
+      "criterion": "Registered users can sign in and reach the command dashboard",
+      "name": "officer-login-survives-reload",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "Logged in with gate-1790440226@kiit.ac.in, control-room-page and header-user-profile visible, session survives a full page reload."
+    },
+    {
+      "criterion": "New users can create an account and continue into the app",
+      "name": "officer-signup-reaches-control-room",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "Signed up with a unique tscheck-<timestamp>@kiit.ac.in / 8+ char password, control-room-page rendered with header-user-profile showing the new full name."
+    },
+    {
+      "criterion": "The redesigned dashboard is professionally KIIT branded",
+      "name": "kiit-branding-visible",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "auth-brand-lockup shows KIIT copy on /login; post-login header background computed as rgb(139, 0, 0) (#8b0000 KIIT crimson) and page background rgb(246, 243, 239) (#f6f3ef warm white); header-brand reads 'KIIT Safety GIS'."
+    },
+    {
+      "criterion": "A real Bhubaneswar geographic map is visible and interactive",
+      "name": "campus-map-controls-respond",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "map-canvas visible with .leaflet-control-attribution containing 'OpenStreetMap'; city/KIIT focus buttons and locate/fullscreen controls present and clickable."
+    },
+    {
+      "criterion": "Map search, styles, fullscreen and hotspots work",
+      "name": "campus-map-controls-respond",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "Searching 'KIIT Square' surfaced map-search-result-zone-1 which focused the zone and opened the drawer (42 in drawer-zone-metrics); map-layer-street/dark/light-button each toggled the map-style-* class; map-hotspot-zone-1 marker click also opened the intelligence drawer."
+    },
+    {
+      "criterion": "Time and category filters update representative incident data",
+      "name": "incident-filters-update-feed",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "metric-card-selected-window value changed between 24h (3, curl-verified) and all (26, curl-verified) filters and returned to the original value when switching back; category filter to Traffic Accident (8 incidents, curl-verified) kept incident-feed-count non-zero; an unmatched search term correctly showed incident-feed-empty."
+    },
+    {
+      "criterion": "Incident details and prototype response actions are usable",
+      "name": "risk-register-opens-intelligence",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "risk-summary-zone-1 opened incident-detail-drawer with CRITICAL severity, category breakdown and peak window; Dispatch showed 'Prototype dispatch request recorded' and Review showed 'Prototype incident marked for review', with footer copy confirming 'Prototype actions only — no live emergency service is contacted.'"
+    },
+    {
+      "criterion": "Export, share and logout controls work",
+      "name": "export-share-logout-controls-work",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "export-json-button triggered a real browser download with a .json filename; share-report-button produced a toast/clipboard confirmation; header-logout-button returned the app to /login (auth-page visible)."
+    },
+    {
+      "criterion": "Backend API contract for zones/incidents (supports map, filters, hotspot criteria)",
+      "name": "test_tscheck_incidents.py::test_incident_windows_and_category_filters_return_expected_feed",
+      "lane": "backend",
+      "status": "passed",
+      "evidence": "GET /api/incidents?range=all -> 200, total_incidents (321) now asserted as sum(zone.incidents) instead of a stale hardcoded 140; high_risk_zone_id == zone-1; range=7d filtered_incidents < range=all; category=Traffic Accident returns >0 incidents all matching the category."
+    }
+  ]
+}

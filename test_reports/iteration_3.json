@@ -1,0 +1,103 @@
+{
+  "iteration": 3,
+  "mode": "generate",
+  "summary": "Rebuilt test artifacts from scratch for the redesigned KIIT Safety Connect dispatch app (auth/civilian/officer/response-team roles, live dispatch, GIS, comms, escalation). Removed 9 stale check files that referenced the removed gate account / old prototype UI. Rewrote backend auth tests (old defaults no longer matched: signup now defaults to CIVILIAN, gate account removed, portal_role gating enforced) and added a dispatch lifecycle + escalation backend test file. Added 8 new browser checks, one per acceptance-matrix criterion. All backend tests (5) and browser checks (8) pass.",
+  "passed": 13,
+  "failed": 0,
+  "bugs": [],
+  "action_items": [
+    "None outstanding. Note: httpx test clients must re-set the session cookie without the Secure flag to work over the plain-http localhost test transport (COOKIE_SECURE=true is correct for the real https deployment); documented via login_client() helper in backend/tests/conftest.py for future test authors."
+  ],
+  "retest_needed": false,
+  "checks": [
+    {
+      "criterion": "Role-secure authentication matches the Web-Shooter portals",
+      "name": "test_tscheck_auth.py",
+      "lane": "backend",
+      "status": "passed",
+      "evidence": "POST /auth/signup -> 200 role=CIVILIAN; POST /auth/login wrong-portal (OFFICER) with civilian creds -> 403; correct portal -> 200; seeded officer control@kiit.ac.in correct portal -> 200 role=OFFICER, mismatched portal (RESPONSE_TEAM) -> 403"
+    },
+    {
+      "criterion": "Role-secure authentication matches the Web-Shooter portals",
+      "name": "civilian-signup-opens-civilian-only",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "Signup -> civilian-dashboard visible; same creds via officer portal -> 403, stays on auth-page; civilian portal -> succeeds; seeded control@kiit.ac.in via officer portal -> control-room-page visible"
+    },
+    {
+      "criterion": "Civilian can submit and track a mapped incident",
+      "name": "civilian-reports-incident-and-tracks-status",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "POST /dispatch/reports -> 201; civilian-report-{id} card visible with title, 'Sent to control room' NEW status text, and Live/Polling fallback indicator"
+    },
+    {
+      "criterion": "Control room receives and coordinates reports in real time",
+      "name": "officer-queue-acknowledges-and-scores-teams",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "New report visible in dispatch-report-{id} queue; PATCH .../status ACKNOWLEDGED -> 200; team recommendation cards show distance km, AVAILABLE/BUSY/OFF_DUTY, active workload"
+    },
+    {
+      "criterion": "Control room receives and coordinates reports in real time",
+      "name": "test_tscheck_dispatch.py::test_report_lifecycle_ack_score_assign_accept_resolve",
+      "lane": "backend",
+      "status": "passed",
+      "evidence": "GET /dispatch/reports/{id}/recommendations -> 200, each item has team/score/distance_km/capability_match/reasoning; Campus Fire Unit capability_match true for Fire Hazard category"
+    },
+    {
+      "criterion": "Officer can assign overlapping responders with one accountable primary team",
+      "name": "officer-assigns-multiple-teams-with-primary",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "POST /dispatch/reports/{id}/assign with 2 team_ids + primary_team_id -> 200, status TEAM_ASSIGNED, assigned_team_ids length 2; UI shows 'TEAM ASSIGNED' and assigned-teams panel"
+    },
+    {
+      "criterion": "Response team closes the accountability loop",
+      "name": "response-team-closes-accountability-loop",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "team-assignment-{id} visible only for the assigned fire team; TEAM_ACCEPTED -> EN_ROUTE -> RESOLVED all 200; final timeline statuses exactly [NEW,ACKNOWLEDGED,TEAM_ASSIGNED,TEAM_ACCEPTED,EN_ROUTE,RESOLVED] with actor_role covering CIVILIAN/OFFICER/RESPONSE_TEAM"
+    },
+    {
+      "criterion": "Incident communication and fallback escalation work",
+      "name": "incident-comms-and-escalation-fallback",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "Civilian and officer messages both posted via POST .../messages and rendered in incident-comms-{id}; POST .../escalate -> 200, status back to ACKNOWLEDGED, assigned_team_ids=[], primary_team_id=null"
+    },
+    {
+      "criterion": "Incident communication and fallback escalation work",
+      "name": "test_tscheck_dispatch.py::test_officer_can_escalate_unacknowledged_assignment_and_clear_teams",
+      "lane": "backend",
+      "status": "passed",
+      "evidence": "POST /dispatch/reports/{id}/escalate -> 200, timeline[-1].status == 'ESCALATED', assigned_team_ids cleared, primary_team_id null"
+    },
+    {
+      "criterion": "Officer GIS and patrol intelligence remain usable",
+      "name": "officer-gis-and-geofence-tools-work",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "map-canvas loads; geofence draw (3 map clicks) -> POST /geofences 200 -> card visible; PUT edit rename reflected in card; DELETE removes card; hotspot search + KIIT focus + dark style switch work; incident-detail-drawer opens/closes from hotspot matrix"
+    },
+    {
+      "criterion": "Public preview security and presentation meet hackathon expectations",
+      "name": "public-preview-loads-and-blocks-old-credentials",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "https://kiit-incidents.preview.emergentagent.com loads auth-page (no blank page); prototype label visible; old gate@kiit.ac.in/kiit-gis-2025 -> 401 rejected; new civilian signup + report creation succeed end-to-end with no strict-console failures"
+    },
+    {
+      "criterion": "Public preview security and presentation meet hackathon expectations",
+      "name": "curl security headers probe",
+      "lane": "backend",
+      "status": "passed",
+      "evidence": "curl -I https://kiit-incidents.preview.emergentagent.com/api/incidents shows strict-transport-security, content-security-policy, x-content-type-options: nosniff, permissions-policy, referrer-policy headers present"
+    }
+  ],
+  "notes": [
+    "Removed stale artifacts from a prior app version (campus-map-controls-respond, export-share-logout-controls-work, incident-filters-update-feed, invalid-credentials-show-error, kiit-branding-visible, kiit-login-reaches-control-room, officer-login-survives-reload, officer-signup-reaches-control-room, risk-register-opens-intelligence) since they referenced the removed gate@kiit.ac.in account and an earlier UI that no longer exists.",
+    "8 acceptance-matrix criteria covered exactly (matches briefing count); 5 backend + 8 browser artifacts = 13 checks total, several criteria have both lanes as they are API-backed UI flows.",
+    "Fixed a real test-authoring gotcha, not an app bug: httpx test client withholds Secure-flagged cookies on plain http://localhost transport; real browsers treat localhost as a secure context so this does not affect actual users."
+  ]
+}
